@@ -8,7 +8,7 @@ import javax.enterprise.inject.spi.Extension;
 public class CacheScopedExtension implements Extension {
 
 	public void addScope(@Observes final BeforeBeanDiscovery event) {
-		event.addScope(CacheScoped.class, true, true);
+		event.addScope(CacheScoped.class, true, false);
 	}
 
 	public void registerContext(@Observes final AfterBeanDiscovery event) {
