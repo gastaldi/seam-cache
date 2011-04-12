@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.jboss.seam</groupId>
+		<artifactId>seam-parent</artifactId>
+		<version>10</version>
+	</parent>
+
+	<groupId>org.jboss.seam</groupId>
+	<artifactId>seam-cache</artifactId>
+	<name>cache</name>
+	<version>1.0-SNAPSHOT</version>
+
+	<properties>
+		<arquillian.version>1.0.0.Alpha5</arquillian.version>
+		<el-api.version>2.2</el-api.version>
+		<seam.version>3.0.0.Final</seam.version>
+	</properties>
+
+	<!-- Snapshots repo to get parent -->
+	<repositories>
+		<repository>
+			<id>oss.sonatype.org/jboss-snapshots</id>
+			<name>JBoss (Nexus) Snapshots Repository</name>
+			<url>http://oss.sonatype.org/content/repositories/jboss-snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jboss.seam</groupId>
+				<artifactId>seam-bom</artifactId>
+				<version>${seam.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<!-- CDI (JSR-299) -->
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Required by Arquillian -->
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>el-api</artifactId>
+			<version>${el-api.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jboss.arquillian</groupId>
+			<artifactId>arquillian-junit</artifactId>
+			<version>${arquillian.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.arquillian.container</groupId>
+			<artifactId>arquillian-weld-se-embedded-1.1</artifactId>
+			<version>${arquillian.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.weld</groupId>
+			<artifactId>weld-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.weld</groupId>
+			<artifactId>weld-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<scm>
+		<connection>scm:svn:http://anonsvn.jboss.org/repos/seam/modules/cache/trunk</connection>
+		<developerConnection>scm:svn:https://svn.jboss.org/repos/seam/modules/cache/trunk</developerConnection>
+		<url>http://fisheye.jboss.org/browse/Seam/modules/cache/trunk</url>
+	</scm>
+
+</project>
