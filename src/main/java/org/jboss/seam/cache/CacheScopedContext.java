@@ -10,7 +10,17 @@ import javax.enterprise.inject.spi.Bean;
 import net.sf.jsr107cache.Cache;
 import net.sf.jsr107cache.CacheManager;
 
+import org.jboss.weld.serialization.ContextualStoreImpl;
+import org.jboss.weld.serialization.spi.ContextualStore;
+
 public class CacheScopedContext implements Context {
+
+	//TODO: Remove this dependency
+	private ContextualStore store;
+
+	public CacheScopedContext() {
+		store = new ContextualStoreImpl();
+	}
 
 	@Override
 	public Class<? extends Annotation> getScope() {
@@ -36,33 +46,37 @@ public class CacheScopedContext implements Context {
 		T obj = getFromCache(cacheName, key);
 		return obj;
 	}
-	
+
 	private <T> T getCache(CreationalContext<T> creationalContext, Bean<T> bean) {
 		String key = getName(bean);
 		String cacheName = getCacheName(bean);
 		T obj = getFromCache(cacheName, key);
 		if (obj == null) {
-			obj = bean.create(creationalContext);
-			putInCache(cacheName,key,obj);
+			synchronized (this) {
+				// Double checked locking
+				obj = getFromCache(cacheName, key);
+				if (obj == null) {
+					obj = bean.create(creationalContext);
+					putInCache(cacheName, key, obj);
+				}
+			}
 		}
 		return obj;
 	}
 
 	private <T> void putInCache(String cacheName, String key, T obj) {
-		CacheManager cacheManager = CacheManager.getInstance();
-		Cache cache = cacheManager.getCache(cacheName);
+		Cache cache = CacheManager.getInstance().getCache(cacheName);
 		if (cache == null) {
-			throw new IllegalStateException("Cache "+cacheName + " does not exists");
+			throw new IllegalStateException("Cache " + cacheName + " does not exists");
 		}
 		cache.put(key, obj);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private <T> T getFromCache(String cacheName, String key) {
-		CacheManager cacheManager = CacheManager.getInstance();
-		Cache cache = cacheManager.getCache(cacheName);
+		Cache cache = CacheManager.getInstance().getCache(cacheName);
 		if (cache == null) {
-			throw new IllegalStateException("Cache "+cacheName + " does not exists");
+			throw new IllegalStateException("Cache " + cacheName + " does not exists");
 		}
 		return (T) cache.get(key);
 	}
@@ -72,12 +86,7 @@ public class CacheScopedContext implements Context {
 		return cs.cacheName();
 	}
 
-	private <T> String getName(Bean<T> bean) {
-		String name = bean.getName();
-		if (name == null || name.isEmpty()) {
-			name = bean.getBeanClass().getName();
-		}
-		return name;
+	private String getName(Bean<?> bean) {
+		return store.putIfAbsent(bean);
 	}
-
 }
