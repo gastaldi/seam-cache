@@ -15,7 +15,7 @@ import org.jboss.weld.serialization.spi.ContextualStore;
 
 public class CacheScopedContext implements Context {
 
-	//TODO: Remove this dependency
+	// TODO: Remove this dependency
 	private ContextualStore store;
 
 	public CacheScopedContext() {
@@ -34,8 +34,20 @@ public class CacheScopedContext implements Context {
 
 	@Override
 	public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
-		Bean<T> bean = (Bean<T>) contextual;
-		return getCache(creationalContext, bean);
+		String key = getName(contextual);
+		String cacheName = getCacheName((Bean<T>) contextual);
+		T obj = getFromCache(cacheName, key);
+		if (obj == null) {
+			synchronized (this) {
+				// Double checked locking
+				obj = getFromCache(cacheName, key);
+				if (obj == null) {
+					obj = contextual.create(creationalContext);
+					putInCache(cacheName, key, obj);
+				}
+			}
+		}
+		return obj;
 	}
 
 	@Override
@@ -43,25 +55,7 @@ public class CacheScopedContext implements Context {
 		Bean<T> bean = (Bean<T>) contextual;
 		String key = getName(bean);
 		String cacheName = getCacheName(bean);
-		T obj = getFromCache(cacheName, key);
-		return obj;
-	}
-
-	private <T> T getCache(CreationalContext<T> creationalContext, Bean<T> bean) {
-		String key = getName(bean);
-		String cacheName = getCacheName(bean);
-		T obj = getFromCache(cacheName, key);
-		if (obj == null) {
-			synchronized (this) {
-				// Double checked locking
-				obj = getFromCache(cacheName, key);
-				if (obj == null) {
-					obj = bean.create(creationalContext);
-					putInCache(cacheName, key, obj);
-				}
-			}
-		}
-		return obj;
+		return getFromCache(cacheName, key);
 	}
 
 	private <T> void putInCache(String cacheName, String key, T obj) {
@@ -86,7 +80,7 @@ public class CacheScopedContext implements Context {
 		return cs.cacheName();
 	}
 
-	private String getName(Bean<?> bean) {
+	private String getName(Contextual<?> bean) {
 		return store.putIfAbsent(bean);
 	}
 }
