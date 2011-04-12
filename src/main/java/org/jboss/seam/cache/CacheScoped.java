@@ -28,5 +28,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  */
 public @interface CacheScoped {
-	@Nonbinding String regionName() default "default";
+	@Nonbinding String cacheName() default "default";
 }

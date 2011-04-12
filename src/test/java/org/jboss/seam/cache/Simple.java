@@ -1,5 +1,6 @@
 package org.jboss.seam.cache;
 
+
 /**
  * A simple class on {@link CachedScope}
  * 

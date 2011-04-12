@@ -62,7 +62,7 @@
 			<artifactId>el-api</artifactId>
 			<version>${el-api.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.jboss.arquillian</groupId>
 			<artifactId>arquillian-junit</artifactId>
@@ -99,6 +99,16 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jsr107cache</groupId>
+			<artifactId>jsr107cache</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-jcache</artifactId>
+			<version>1.2</version>
 		</dependency>
 	</dependencies>
 
