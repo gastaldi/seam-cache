@@ -9,4 +9,12 @@ package org.jboss.seam.cache;
 @CacheScoped
 public class Simple {
 
+	private long nanos;
+	public Simple() {
+		this.nanos = System.nanoTime();
+	}
+	
+	public long getNanos() {
+		return nanos;
+	}
 }

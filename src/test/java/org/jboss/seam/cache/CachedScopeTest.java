@@ -35,6 +35,6 @@ public class CachedScopeTest {
 		System.out.println(secondInstance);
 		assertNotNull(firstInstance);
 		assertNotNull(secondInstance);
-		assertNotSame(firstInstance, secondInstance);
+		assertNotSame(firstInstance.getNanos(), secondInstance.getNanos());
 	}
 }
